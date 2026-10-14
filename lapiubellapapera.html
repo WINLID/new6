@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcolatore Tecnico Geometrico - IE11</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #2b2b2b;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 750px;
+            margin: 0 auto;
+        }
+        .header {
+            background-color: #005a9e; /* Blu industriale */
+            color: white;
+            padding: 20px;
+            border-radius: 3px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .card {
+            background: #ffffff;
+            padding: 20px;
+            border: 1px solid #ced4da;
+            border-radius: 3px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            margin-top: 0;
+            color: #005a9e;
+            border-bottom: 2px solid #005a9e;
+            padding-bottom: 5px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="number"], select {
+            width: 95%;
+            padding: 8px;
+            margin: 5px 0 12px 0;
+            border: 1px solid #a19f9d;
+            font-size: 14px;
+        }
+        button {
+            background-color: #005a9e;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #004578;
+        }
+        .risultato-box {
+            background-color: #f3f2f1;
+            padding: 12px;
+            border-left: 4px solid #005a9e;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Calcolatore Geometrico & Officina</h1>
+        <p>Strumento leggero offline per officine, scuole e calcoli millimetrici rapidi (IE11 OK)</p>
+    </div>
+
+    <!-- CONVERTITORE MISURE -->
+    <div class="card">
+        <h2>📏 Convertitore Pollici / Millimetri</h2>
+        <p>Utile per leggere i disegni tecnici meccanici o le frazioni di misure.</p>
+        <label for="valoreMisura">Valore da convertire:</label>
+        <input type="number" id="valoreMisura" step="0.001" value="1">
+        
+        <label for="direzioneConversione">Conversione:</label>
+        <select id="direzioneConversione">
+            <option value="daPollici">Da Pollici (in) a Millimetri (mm)</option>
+            <option value="daMm">Da Millimetri (mm) a Pollici (in)</option>
+        </select>
+        
+        <button id="btnConverti">Esegui Conversione</button>
+        <div class="risultato-box" id="outputConversione">Risultato: 25.400 mm</div>
+    </div>
+
+    <!-- CALCOLO AREA CERCHIO / CILINDRO -->
+    <div class="card">
+        <h2>⭕ Calcolo Area Cerchio e Volume Cilindro</h2>
+        <p>Inserisci le dimensioni geometriche di un pezzo o di una figura geometrica.</p>
+        
+        <label for="raggio">Raggio (r):</label>
+        <input type="number" id="raggio" step="0.01" value="0">
+
+        <label for="altezza">Altezza (h) - Opzionale per il volume:</label>
+        <input type="number" id="altezza" step="0.01" value="0">
+
+        <button id="btnCalcolaGeometria">Calcola Dimensioni</button>
+        <div class="risultato-box" id="outputGeometria">
+            Area del cerchio: 0.00 <br>
+            Circonferenza: 0.00 <br>
+            Volume del cilindro (se inserita altezza): 0.00
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    // --- 1. GESTIONE CONVERSIONE ---
+    var valoreMisura = document.getElementById("valoreMisura");
+    var direzioneConversione = document.getElementById("direzioneConversione");
+    var outputConversione = document.getElementById("outputConversione");
+
+    document.getElementById("btnConverti").addEventListener("click", function() {
+        var val = parseFloat(valoreMisura.value);
+        if (isNaN(val)) {
+            outputConversione.innerHTML = "Inserisci un numero valido.";
+            return;
+        }
+
+        if (direzioneConversione.value === "daPollici") {
+            var risMm = val * 25.4;
+            outputConversione.innerHTML = "Risultato: " + risMm.toFixed(3) + " mm";
+        } else {
+            var risIn = val / 25.4;
+            outputConversione.innerHTML = "Risultato: " + risIn.toFixed(4) + " in";
+        }
+    });
+
+    // --- 2. GESTIONE GEOMETRIA ---
+    var raggioInput = document.getElementById("raggio");
+    var altezzaInput = document.getElementById("altezza");
+    var outputGeometria = document.getElementById("outputGeometria");
+
+    document.getElementById("btnCalcolaGeometria").addEventListener("click", function() {
+        var r = parseFloat(raggioInput.value);
+        var h = parseFloat(altezzaInput.value);
+
+        if (isNaN(r) || r < 0) {
+            outputGeometria.innerHTML = "Inserisci un valore di raggio valido.";
+            return;
+        }
+
+        var piGreco = Math.PI;
+        var area = piGreco * Math.pow(r, 2);
+        var circonferenza = 2 * piGreco * r;
+        var volume = 0;
+
+        if (!isNaN(h) && h > 0) {
+            volume = area * h;
+        }
+
+        outputGeometria.innerHTML = "Area del cerchio: " + area.toFixed(2) + "<br>" +
+                                     "Circonferenza: " + circonferenza.toFixed(2) + "<br>" +
+                                     "Volume del cilindro: " + (volume > 0 ? volume.toFixed(2) : "0.00");
+    });
+</script>
+
+</body>
+</html>
